@@ -15,11 +15,14 @@
 #define X 4 // width
 #define Y 4 // height 
 
-void initGame(int game[X][Y]);
-void addRandom(int game[X][Y]);
-void init(int game[X][Y]);
-int checkValidGame(int game[X][Y]);
-void print(int game[X][Y]);
+void initGame(int game[X][Y]);                      //sets values of the matrix to 0 and ads 2 blocks in random coordinates
+void addRandom(int game[X][Y]);                     //adds one random number(2 or 4) to the matrix
+void init(int game[X][Y]);                          //sets all the values of matrix to 0 - NOT USED
+int checkValidGame(int game[X][Y]);                 //used for checking if the game is finished
+void print(int game[X][Y]);                         //prints out the matrix
+// the folowing sum and move functions are used for controling the game
+// I've separated them because one command needs to triger move function sum function and another move function because sum function can leave zeroes on the wrong places
+// example 2 2 2 2 (moveRight) -> 2 2 2 2 (sumRight) -> 0 4 0 4 (moveRight) -> 0 0 4 4
 void moveLeft(int game[X][Y]);
 void sumLeft(int game[X][Y]);
 void moveRight(int game[X][Y]);
@@ -28,11 +31,13 @@ void moveUp(int game[X][Y]);
 void sumUp(int game[X][Y]);
 void moveDown(int game[X][Y]);
 void sumDown(int game[X][Y]);
+// checks if the matrix is blocked in one direction
 int isBlockedUp(int game[X][Y]);
 int isBlockedDown(int game[X][Y]);
 int isBlockedLeft(int game[X][Y]);
 int isBlockedRight(int game[X][Y]);
-int isEqual(int game[X][Y], int copy[X][Y]);
+
+int isEqual(int game[X][Y], int copy[X][Y]);        //checks if 2 matrices are the same
 
 
 // TODO: 
@@ -118,7 +123,7 @@ void initGame(int game[X][Y]){
     do{
         x_rand2 = rand() % 4;
         y_rand2 = rand() % 4;
-    }while(x_rand1 == x_rand2 && y_rand1 == y_rand2);       // finding a second random coordinate that cant be the same as the first one, hence the do while loop
+    }while(x_rand1 == x_rand2 && y_rand1 == y_rand2);       // finding a second random coordinate that can't be the same as the first one, hence the do while loop
     game[x_rand2][y_rand2] = 2 * ((rand()%2) + 1);
 }
 void addRandom(int game[X][Y]){    
@@ -219,7 +224,9 @@ int checkValidGame(int game[X][Y]){
     moveRight(copy);
     sumRight(copy);
     moveRight(copy);
-
+    /* program does all 4 operations(UP, DOWN, LEFT, RIGHT) on a copy of the original matrix 
+       an if the outcome is the same then the game is over
+    */
     for(int i = 0; i < X; i++){
         for(int j = 0; j < Y; j++){
             if(game[i][j] != copy[i][j]){
