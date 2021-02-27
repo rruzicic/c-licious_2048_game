@@ -12,17 +12,20 @@
 #define ANSI_COLOR_CYAN    "\x1b[36m"
 #define ANSI_COLOR_RESET   "\x1b[0m"
 
-#define X 4 // width
-#define Y 4 // height 
+#define X 4    // width
+#define Y 4    // height 
+
+int score = 0; // global variable score
 
 void initGame(int game[X][Y]);                      //sets values of the matrix to 0 and ads 2 blocks in random coordinates
 void addRandom(int game[X][Y]);                     //adds one random number(2 or 4) to the matrix
 void init(int game[X][Y]);                          //sets all the values of matrix to 0 - NOT USED
 int checkValidGame(int game[X][Y]);                 //used for checking if the game is finished
 void print(int game[X][Y]);                         //prints out the matrix
-// the folowing sum and move functions are used for controling the game
-// I've separated them because one command needs to triger move function sum function and another move function because sum function can leave zeroes on the wrong places
-// example 2 2 2 2 (moveRight) -> 2 2 2 2 (sumRight) -> 0 4 0 4 (moveRight) -> 0 0 4 4
+
+/* the folowing sum and move functions are used for controling the game
+   I've separated them because one command needs to triger move function sum function and another move function because sum function can leave zeroes on the wrong places
+   example 2 2 2 2 (moveRight) -> 2 2 2 2 (sumRight) -> 0 4 0 4 (moveRight) -> 0 0 4 4 */
 void moveLeft(int game[X][Y]);
 void sumLeft(int game[X][Y]);
 void moveRight(int game[X][Y]);
@@ -41,7 +44,7 @@ int isEqual(int game[X][Y], int copy[X][Y]);        //checks if 2 matrices are t
 
 
 // TODO: 
-// 1. scoring system
+// 1. scoring system -- DONE
 // 2. move all functions below main -- DONE
 // 3. GUI - yup this will take a while
 // 4. DO NOT add new number when moving is blocked -- DONE
@@ -80,7 +83,6 @@ int main()
             moveLeft(game);
             addRandom(game);
             system("clear");
-
             print(game);
         } else if(c == 's'){
             if(isBlockedDown(game) == 1){ continue; }
@@ -89,7 +91,6 @@ int main()
             moveDown(game); 
             addRandom(game);
             system("clear");
-            
             print(game);
         } else if(c == 'd'){
             if(isBlockedRight(game) == 1){ continue; }
@@ -98,7 +99,6 @@ int main()
             moveRight(game);
             addRandom(game);
             system("clear");
-            
             print(game);
         } else{
             printf("Invalid character!\n");
@@ -143,7 +143,7 @@ void init(int game[X][Y]){
         }
     }  
 }
-int isBlockedUp(int game[X][Y]){ //
+int isBlockedUp(int game[X][Y]){ 
     int copy[X][Y];
 
     memcpy(copy, game, X*Y*sizeof(int));
@@ -153,7 +153,7 @@ int isBlockedUp(int game[X][Y]){ //
     if(isEqual(game, copy)){ return 1; }
     return 0;
 }
-int isBlockedDown(int game[X][Y]){ //
+int isBlockedDown(int game[X][Y]){ 
     int copy[X][Y];
 
     memcpy(copy, game, X*Y*sizeof(int));
@@ -164,7 +164,7 @@ int isBlockedDown(int game[X][Y]){ //
     if(isEqual(game, copy)){ return 1; }
     return 0;
 }
-int isBlockedLeft(int game[X][Y]){ //
+int isBlockedLeft(int game[X][Y]){ 
     int copy[X][Y];
 
     memcpy(copy, game, X*Y*sizeof(int));
@@ -175,7 +175,7 @@ int isBlockedLeft(int game[X][Y]){ //
     if(isEqual(game, copy)){ return 1; }
     return 0;
 }
-int isBlockedRight(int game[X][Y]){ //
+int isBlockedRight(int game[X][Y]){ 
     int copy[X][Y];
 
     memcpy(copy, game, X*Y*sizeof(int));
@@ -237,6 +237,7 @@ int checkValidGame(int game[X][Y]){
     return 0;
 }
 void print(int game[X][Y]){
+    printf(ANSI_COLOR_RED "*** SCORE: %d ***\n" ANSI_COLOR_RESET, score);
     for(int i = 0; i < X; i++){
         printf(ANSI_COLOR_GREEN "+-------+-------+-------+-------+\n" ANSI_COLOR_RESET);
         printf(ANSI_COLOR_GREEN "|" ANSI_COLOR_RESET);
@@ -275,7 +276,7 @@ void sumLeft(int game[X][Y]){
             if(game[i][j] != 0 && game[i][j+1] == game[i][j]){
                 game[i][j] = 2 * game[i][j];
                 game[i][j+1] = 0;
-                
+                score += game[i][j] / 2;
             }
         }
     }
@@ -305,6 +306,8 @@ void sumRight(int game[X][Y]){
             if(game[i][j] != 0 && game[i][j-1] == game[i][j]){
                 game[i][j] = 2 * game[i][j];
                 game[i][j-1] = 0;
+                score += game[i][j] / 2;
+
             }
         }
     }
@@ -324,7 +327,6 @@ void moveUp(int game[X][Y]){
                 }
             }
         }
-
     }
 }
 
@@ -334,6 +336,7 @@ void sumUp(int game[X][Y]){
             if(game[j][i] != 0 && game[j+1][i] == game[j][i]){
                 game[j][i] = 2 * game[j][i];
                 game[j+1][i] = 0;
+                score += game[j][i] / 2;
             }
         }
     }
@@ -354,7 +357,6 @@ void moveDown(int game[X][Y]){
                 }
             }
         }
-
     }
 }
 void sumDown(int game[X][Y]){
@@ -363,6 +365,7 @@ void sumDown(int game[X][Y]){
             if(game[j][i] != 0 && game[j-1][i] == game[j][i]){
                 game[j][i] = 2 * game[j][i];
                 game[j-1][i] = 0;
+                score += game[j][i] / 2;
             }
         }
     }
