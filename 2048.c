@@ -105,7 +105,7 @@ int main()
         }
         
     }while(checkValidGame(game));
-    printf(ANSI_COLOR_RED "GAME OVER!" ANSI_COLOR_RESET);
+    printf(ANSI_COLOR_RED "GAME OVER!\n" ANSI_COLOR_RESET);
     return(0);
 }
 
